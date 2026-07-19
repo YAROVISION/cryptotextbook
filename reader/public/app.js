@@ -115,8 +115,27 @@ function initMonaco() {
 // ==========================================================================
 function setupEventListeners() {
   // Sidebar toggler
-  elements.sidebarToggle.addEventListener('click', () => {
-    elements.sidebar.classList.toggle('collapsed');
+  elements.sidebarToggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (window.innerWidth <= 768) {
+      elements.sidebar.classList.toggle('active');
+    } else {
+      elements.sidebar.classList.toggle('collapsed');
+    }
+  });
+
+  // Close sidebar drawer on mobile when clicking on main content
+  document.querySelector('.main-content').addEventListener('click', () => {
+    if (window.innerWidth <= 768 && elements.sidebar.classList.contains('active')) {
+      elements.sidebar.classList.remove('active');
+    }
+  });
+
+  // Close sidebar drawer on mobile when clicking on a chapter item
+  elements.chapterList.addEventListener('click', (e) => {
+    if (window.innerWidth <= 768 && (e.target.closest('.chapter-list-item') || e.target.closest('a'))) {
+      elements.sidebar.classList.remove('active');
+    }
   });
 
   // Theme toggle

@@ -25,6 +25,18 @@ if (!fs.existsSync(backupDir)) {
   fs.mkdirSync(backupDir, { recursive: true });
 }
 
+// Copy new cropped favicon if it exists in system artifacts
+const croppedFaviconSrc = '/Users/kostantinkrivula/.gemini/antigravity-ide/brain/4f2261be-1e29-4c6f-bbdd-e005fe4e8d83/favicon_textbook_nobg_1784454851179.png';
+const faviconDest = path.join(__dirname, 'public/favicon.png');
+if (fs.existsSync(croppedFaviconSrc)) {
+  try {
+    fs.copyFileSync(croppedFaviconSrc, faviconDest);
+    console.log('Favicon successfully updated to the cropped no-background version.');
+  } catch (err) {
+    console.error(`Favicon copy error: ${err.message}`);
+  }
+}
+
 // Helper to check path safety (prevent directory traversal)
 const getSafePath = (filename) => {
   const resolved = path.resolve(bookDir, filename);

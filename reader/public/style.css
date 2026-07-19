@@ -1104,3 +1104,131 @@ body {
 
 .toast-info { border-left: 4px solid var(--info); }
 .toast-info .toast-icon { color: var(--info); }
+
+/* ==========================================================================
+   Mobile Responsive Adjustments
+   ========================================================================== */
+@media (max-width: 768px) {
+  /* Layout adjustments */
+  .app-layout {
+    flex-direction: column;
+    position: relative;
+    height: 100vh;
+  }
+  
+  /* Sidebar as overlay drawer */
+  .sidebar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 280px;
+    height: 100%;
+    z-index: 1000;
+    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.5);
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .sidebar.active {
+    transform: translateX(0);
+  }
+  
+  /* Collapsed state is standard closed state on mobile */
+  .sidebar.collapsed {
+    width: 280px;
+    transform: translateX(-100%);
+    border-right: none;
+  }
+  
+  /* Outline sidebar is hidden on mobile */
+  .outline-sidebar {
+    display: none !important;
+  }
+  
+  /* Main content takes full screen width */
+  .main-content {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+  
+  /* Header adjustments */
+  .app-header {
+    padding: 0 12px;
+    height: 60px;
+  }
+  
+  .title-wrapper {
+    max-width: 160px;
+  }
+  
+  #current-title {
+    font-size: 0.95rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  /* Compact Mode selector and buttons on mobile */
+  .mode-selector span {
+    display: none; /* Hide button text, show only icons for compact layout */
+  }
+  
+  .mode-btn {
+    padding: 8px 12px;
+  }
+  
+  .action-buttons {
+    gap: 8px;
+  }
+  
+  .autosave-wrapper {
+    display: none; /* Hide autosave toggle on mobile to save space */
+  }
+  
+  .primary-btn span {
+    display: none; /* Hide text on save button */
+  }
+  
+  .primary-btn {
+    padding: 8px 12px;
+  }
+  
+  /* Markdown content spacing and sizing */
+  .markdown-body {
+    padding: 24px 16px;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  
+  .markdown-body h1 {
+    font-size: 1.65rem;
+  }
+  .markdown-body h2 {
+    font-size: 1.35rem;
+    padding-bottom: 0.2em;
+  }
+  .markdown-body h3 {
+    font-size: 1.15rem;
+  }
+  
+  /* Disable split screen editor on mobile */
+  .split-mode #reader-panel {
+    width: 100% !important;
+  }
+  
+  .split-mode #editor-panel {
+    display: none !important;
+  }
+  
+  /* Global search results panel spacing */
+  .search-results-list {
+    padding: 16px;
+  }
+  
+  .search-result-item {
+    padding: 14px;
+    margin-bottom: 16px;
+  }
+}
+
