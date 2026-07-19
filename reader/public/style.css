@@ -2,65 +2,65 @@
    CSS variables & Design Tokens
    ========================================================================== */
 :root[data-theme="dark"] {
-  --bg-primary: #0d1117;
-  --bg-secondary: #161b22;
-  --bg-tertiary: #0b0e14;
-  --bg-panel: rgba(22, 27, 34, 0.8);
-  --border-color: rgba(240, 246, 252, 0.1);
-  --border-glow: rgba(88, 166, 255, 0.15);
+  --bg-primary: #141413;        /* Slate Dark - warm near-black canvas */
+  --bg-secondary: #1c1c1a;      /* Elevated warm charcoal card surface */
+  --bg-tertiary: #282825;       /* Deeper warm dark surface */
+  --bg-panel: rgba(28, 28, 26, 0.8);
+  --border-color: #3a3a37;      /* Warm dark borders */
+  --border-glow: rgba(219, 119, 87, 0.25);
   
-  --text-primary: #e6edf3;
-  --text-secondary: #8d96a0;
-  --text-muted: #565e67;
+  --text-primary: #faf9f5;      /* Ivory Light - warm white body text */
+  --text-secondary: #b0aea5;    /* Cloud Medium secondary text */
+  --text-muted: #87867f;        /* Cloud Dark muted helper text */
   
-  --accent: #58a6ff;
-  --accent-secondary: #bc85ff;
-  --accent-gradient: linear-gradient(135deg, #58a6ff 0%, #bc85ff 100%);
-  --accent-glow: rgba(88, 166, 255, 0.3);
+  --accent: #e68a6c;            /* Terracotta Clay highlight (slightly brighter on dark) */
+  --accent-secondary: #d97757;  /* Clay accent base */
+  --accent-gradient: linear-gradient(135deg, #e68a6c 0%, #d97757 100%);
+  --accent-glow: rgba(230, 138, 108, 0.25);
   
   --success: #3fb950;
-  --success-bg: rgba(46, 160, 67, 0.15);
+  --success-bg: rgba(63, 185, 80, 0.12);
   --warning: #d29922;
-  --warning-bg: rgba(187, 128, 9, 0.15);
+  --warning-bg: rgba(210, 153, 34, 0.12);
   --danger: #f85149;
-  --danger-bg: rgba(248, 81, 73, 0.15);
-  --info: #2f81f7;
-  --info-bg: rgba(47, 129, 247, 0.15);
+  --danger-bg: rgba(248, 81, 73, 0.12);
+  --info: #58a6ff;
+  --info-bg: rgba(88, 166, 255, 0.12);
   
-  --shadow-sm: rgba(0, 0, 0, 0.3);
-  --shadow-md: rgba(0, 0, 0, 0.5);
+  --shadow-sm: none;            /* No shadow in paper metaphor */
+  --shadow-md: none;
   
   --monaco-theme: "vs-dark";
 }
 
 :root[data-theme="light"] {
-  --bg-primary: #f6f8fa;
-  --bg-secondary: #ffffff;
-  --bg-tertiary: #f0f2f5;
-  --bg-panel: rgba(255, 255, 255, 0.85);
-  --border-color: rgba(27, 31, 36, 0.15);
-  --border-glow: rgba(9, 105, 218, 0.1);
+  --bg-primary: #f0eee6;        /* Ivory Medium - warm parchment canvas */
+  --bg-secondary: #faf9f5;      /* Ivory Light - card surface */
+  --bg-tertiary: #e3dacc;       /* Oat Warm - deeper paper tone fill */
+  --bg-panel: rgba(250, 249, 245, 0.85);
+  --border-color: #cccbc8;      /* Stone borders */
+  --border-glow: rgba(217, 119, 87, 0.15);
   
-  --text-primary: #24292f;
-  --text-secondary: #57606a;
-  --text-muted: #8c959f;
+  --text-primary: #141413;      /* Slate Dark - near-black primary text */
+  --text-secondary: #87867f;    /* Cloud Dark secondary text */
+  --text-muted: #b0aea5;        /* Cloud Medium muted text */
   
-  --accent: #0969da;
-  --accent-secondary: #8250df;
-  --accent-gradient: linear-gradient(135deg, #0969da 0%, #8250df 100%);
-  --accent-glow: rgba(9, 105, 218, 0.2);
+  --accent: #d97757;            /* Clay primary filled CTA */
+  --accent-secondary: #c6613f;  /* Clay Deep hover/active */
+  --accent-gradient: linear-gradient(135deg, #d97757 0%, #c6613f 100%);
+  --accent-glow: rgba(217, 119, 87, 0.20);
   
   --success: #1a7f37;
-  --success-bg: rgba(46, 160, 67, 0.1);
+  --success-bg: rgba(46, 160, 67, 0.08);
   --warning: #9a6700;
-  --warning-bg: rgba(187, 128, 9, 0.1);
+  --warning-bg: rgba(187, 128, 9, 0.08);
   --danger: #cf222e;
-  --danger-bg: rgba(248, 81, 73, 0.1);
+  --danger-bg: rgba(248, 81, 73, 0.08);
   --info: #0969da;
-  --info-bg: rgba(9, 105, 218, 0.1);
+  --info-bg: rgba(9, 105, 218, 0.08);
   
-  --shadow-sm: rgba(27, 31, 35, 0.04);
-  --shadow-md: rgba(27, 31, 35, 0.15);
+  --shadow-sm: none;            /* No shadow in paper metaphor */
+  --shadow-md: none;
   
   --monaco-theme: "vs";
 }
@@ -645,8 +645,9 @@ body {
   max-width: 820px;
   margin: 0 auto;
   padding: 40px 48px;
-  font-size: 1.05rem;
-  line-height: 1.7;
+  font-family: 'Anthropic Serif', Georgia, 'Source Serif Pro', 'Charter', serif;
+  font-size: 20px;
+  line-height: 1.45;
   color: var(--text-primary);
 }
 
@@ -655,7 +656,7 @@ body {
 .markdown-body h2, 
 .markdown-body h3, 
 .markdown-body h4 {
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Outfit', 'Anthropic Sans', sans-serif;
   color: var(--text-primary);
   margin-top: 1.8em;
   margin-bottom: 0.6em;
