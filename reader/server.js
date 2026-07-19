@@ -26,7 +26,7 @@ if (!fs.existsSync(backupDir)) {
 }
 
 // Copy new cropped favicon if it exists in system artifacts
-const croppedFaviconSrc = '/Users/kostantinkrivula/.gemini/antigravity-ide/brain/4f2261be-1e29-4c6f-bbdd-e005fe4e8d83/favicon_textbook_nobg_1784454851179.png';
+const croppedFaviconSrc = '/Users/kostantinkrivula/.gemini/antigravity-ide/brain/4f2261be-1e29-4c6f-bbdd-e005fe4e8d83/favicon_upward_chart_1784458344748.png';
 const faviconDest = path.join(__dirname, 'public/favicon.png');
 if (fs.existsSync(croppedFaviconSrc)) {
   try {
