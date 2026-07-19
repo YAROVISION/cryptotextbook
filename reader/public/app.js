@@ -11,7 +11,12 @@ const state = {
   autosaveEnabled: true,
   searchIndex: [], // Local cache of { filename, title, content } for offline searching
   lastSavedContent: '',
-  autosaveTimer: null
+  autosaveTimer: null,
+  // Detect if we are hosted on a static server (like GitHub Pages) or local filesystem
+  isStaticMode: !['localhost', '127.0.0.1'].includes(window.location.hostname) && 
+                !window.location.hostname.startsWith('192.168.') && 
+                !window.location.hostname.startsWith('10.') && 
+                !window.location.hostname.startsWith('172.')
 };
 
 // DOM Elements
@@ -81,6 +86,7 @@ function updateThemeUI(theme) {
 
 // Initialize Monaco Editor
 function initMonaco() {
+  if (state.isStaticMode) return;
   require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.39.0/min/vs' } });
   
   require(['vs/editor/editor.main'], () => {
@@ -114,6 +120,23 @@ function initMonaco() {
 // Event Listeners
 // ==========================================================================
 function setupEventListeners() {
+  // Configure UI for static mode
+  if (state.isStaticMode) {
+    if (elements.modeEdit) elements.modeEdit.style.display = 'none';
+    if (elements.modeSplit) elements.modeSplit.style.display = 'none';
+    const autosaveWrapper = document.querySelector('.autosave-wrapper');
+    if (autosaveWrapper) autosaveWrapper.style.display = 'none';
+    if (elements.saveBtn) elements.saveBtn.style.display = 'none';
+    
+    const statusText = document.querySelector('.status-text');
+    const statusDot = document.querySelector('.status-dot');
+    if (statusText) statusText.textContent = 'Онлайн-версія';
+    if (statusDot) {
+      statusDot.style.backgroundColor = 'var(--accent-color, #38bdf8)';
+      statusDot.style.boxShadow = '0 0 8px var(--accent-color, #38bdf8)';
+    }
+  }
+
   // Sidebar toggler
   elements.sidebarToggle.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -278,7 +301,8 @@ function setWorkspaceMode(mode) {
 // ==========================================================================
 async function loadChapterList() {
   try {
-    const res = await fetch('/api/chapters');
+    const url = state.isStaticMode ? 'chapters.json' : '/api/chapters';
+    const res = await fetch(url);
     if (!res.ok) throw new Error('Не вдалося завантажити список розділів');
     
     state.chapters = await res.json();
@@ -343,10 +367,17 @@ function renderChapterList() {
 
 async function loadChapter(filename, anchor = null) {
   try {
-    const res = await fetch(`/api/chapters/${filename}`);
+    const url = state.isStaticMode ? `book/${filename}` : `/api/chapters/${filename}`;
+    const res = await fetch(url);
     if (!res.ok) throw new Error('Не вдалося завантажити вміст файлу');
     
-    const data = await res.json();
+    let content;
+    if (state.isStaticMode) {
+      content = await res.text();
+    } else {
+      const data = await res.json();
+      content = data.content;
+    }
     
     // Check if there are unsaved changes on the current active chapter
     if (isContentChanged()) {
@@ -355,7 +386,7 @@ async function loadChapter(filename, anchor = null) {
     }
 
     state.activeChapter = state.chapters.find(c => c.filename === filename);
-    state.lastSavedContent = data.content;
+    state.lastSavedContent = content;
     
     localStorage.setItem('last_active_chapter', filename);
 
@@ -654,13 +685,20 @@ async function preloadSearchIndex() {
   // Background parallel downloads for instant searching
   const promises = state.chapters.map(async (ch) => {
     try {
-      const res = await fetch(`/api/chapters/${ch.filename}`);
+      const url = state.isStaticMode ? `book/${ch.filename}` : `/api/chapters/${ch.filename}`;
+      const res = await fetch(url);
       if (res.ok) {
-        const data = await res.json();
+        let content;
+        if (state.isStaticMode) {
+          content = await res.text();
+        } else {
+          const data = await res.json();
+          content = data.content;
+        }
         state.searchIndex.push({
           filename: ch.filename,
           title: ch.title,
-          content: data.content
+          content: content
         });
       }
     } catch (e) {
