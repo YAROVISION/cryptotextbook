@@ -1,0 +1,21 @@
+{
+  "name": "crypto-book-reader",
+  "version": "1.0.0",
+  "description": "Premium Markdown Reader and Editor for Crypto Scalping Textbook",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "highlight.js": "^11.11.1",
+    "katex": "^0.18.1",
+    "lucide": "^1.25.0",
+    "marked": "^18.0.6",
+    "monaco-editor": "^0.55.1",
+    "morgan": "^1.10.0"
+  },
+  "private": true
+}

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="uk" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Крипто-Скальпінг: Підручник</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="libs/katex.min.css">
+  <link rel="stylesheet" href="libs/github-dark.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Main Container -->
+  <div class="app-layout">
+    
+    <!-- Left Sidebar: Chapters & Search -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <i data-lucide="book-open" class="logo-icon"></i>
+          <div>
+            <h1>Скальпінг</h1>
+            <span class="logo-subtitle">Підручник</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Global Search -->
+      <div class="search-box">
+        <div class="search-input-wrapper">
+          <i data-lucide="search" class="search-icon"></i>
+          <input type="text" id="search-input" placeholder="Шукати в підручнику...">
+          <button id="clear-search" class="hidden-btn" title="Очистити пошук">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Chapters Navigation -->
+      <nav class="chapters-nav">
+        <div class="nav-title">Розділи підручника</div>
+        <ul id="chapter-list">
+          <li class="skeleton-item"></li>
+          <li class="skeleton-item"></li>
+          <li class="skeleton-item"></li>
+          <li class="skeleton-item"></li>
+        </ul>
+      </nav>
+      
+      <!-- Sidebar Footer / Settings -->
+      <div class="sidebar-footer">
+        <button id="theme-toggle" class="footer-btn" title="Змінити тему">
+          <i data-lucide="sun" class="sun-icon"></i>
+          <i data-lucide="moon" class="moon-icon"></i>
+          <span class="btn-text">Тема</span>
+        </button>
+        <div class="status-indicator">
+          <span class="status-dot green"></span>
+          <span class="status-text">Локальний сервер</span>
+        </div>
+      </div>
+    </aside>
+    
+    <!-- Main Content Area -->
+    <main class="main-content">
+      
+      <!-- Header / Control bar -->
+      <header class="app-header">
+        <div class="header-left">
+          <button id="sidebar-toggle" class="header-icon-btn" title="Згорнути бічну панель">
+            <i data-lucide="menu"></i>
+          </button>
+          <div class="title-wrapper">
+            <div id="current-category" class="category-badge">Теорія</div>
+            <h2 id="current-title">Оберіть розділ</h2>
+          </div>
+        </div>
+        
+        <div class="header-right">
+          <!-- View Modes -->
+          <div class="mode-selector">
+            <button id="mode-read" class="mode-btn active" data-mode="read" title="Режим читання">
+              <i data-lucide="eye"></i>
+              <span>Читати</span>
+            </button>
+            <button id="mode-edit" class="mode-btn" data-mode="edit" title="Режим редагування">
+              <i data-lucide="edit-3"></i>
+              <span>Редагувати</span>
+            </button>
+            <button id="mode-split" class="mode-btn" data-mode="split" title="Розділений екран">
+              <i data-lucide="columns"></i>
+              <span>Спліт</span>
+            </button>
+          </div>
+          
+          <!-- Actions -->
+          <div class="action-buttons">
+            <div class="autosave-wrapper" title="Автоматичне збереження при редагуванні">
+              <label class="switch-label">
+                <input type="checkbox" id="autosave-toggle" checked>
+                <span class="switch-slider"></span>
+              </label>
+              <span class="autosave-text">Автозбереження</span>
+            </div>
+            <button id="save-btn" class="primary-btn disabled" disabled>
+              <i data-lucide="save"></i>
+              <span>Зберегти</span>
+            </button>
+          </div>
+        </div>
+      </header>
+      
+      <!-- Workspace: Reader & Editor -->
+      <div class="workspace-panels">
+        
+        <!-- Search Results Panel (Overlay/Toggle) -->
+        <div id="search-results-panel" class="workspace-panel hidden">
+          <div class="search-results-header">
+            <h3>Результати пошуку для: "<span id="search-query-display"></span>"</h3>
+            <button id="close-search" class="close-btn"><i data-lucide="x"></i></button>
+          </div>
+          <div id="search-results-list" class="search-results-list">
+            <!-- Results will be loaded here -->
+          </div>
+        </div>
+        
+        <!-- Reader Panel -->
+        <div id="reader-panel" class="workspace-panel active-panel">
+          <article id="reader-content" class="markdown-body">
+            <!-- Rendered Markdown goes here -->
+            <div class="welcome-screen">
+              <i data-lucide="sparkles" class="welcome-icon"></i>
+              <h2>Вітаємо в підручнику з крипто-скальпінгу</h2>
+              <p>Оберіть будь-який розділ з лівого меню, щоб розпочати читання або редагування матеріалу.</p>
+            </div>
+          </article>
+        </div>
+        
+        <!-- Editor Panel -->
+        <div id="editor-panel" class="workspace-panel">
+          <div id="monaco-container"></div>
+        </div>
+        
+      </div>
+    </main>
+    
+    <!-- Right Sidebar: Outline (TOC) -->
+    <aside class="outline-sidebar">
+      <div class="outline-header">
+        <i data-lucide="list-ordered" class="outline-icon"></i>
+        <h3>Зміст розділу</h3>
+      </div>
+      <div class="outline-content">
+        <ul id="outline-list">
+          <li class="empty-outline">Немає змісту для цього розділу</li>
+        </ul>
+      </div>
+    </aside>
+    
+  </div>
+
+  <!-- Floating Toast Notifications -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Scripts -->
+  <!-- Markdown & Code Utilities -->
+  <script src="libs/marked.min.js"></script>
+  <script src="libs/katex.min.js"></script>
+  <script src="libs/highlight.min.js"></script>
+  
+  <!-- Icons -->
+  <script src="libs/lucide.min.js"></script>
+  
+  <!-- Monaco Editor Loader -->
+  <script src="libs/loader.min.js"></script>
+  
+  <!-- Main Application Logic -->
+  <script src="app.js"></script>
+</body>
+</html>
