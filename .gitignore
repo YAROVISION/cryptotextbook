@@ -1,3 +1,6 @@
 .DS_Store
 .obsidian/workspace.json
 dist/
+tmp/
+test.txt
+last-run.json

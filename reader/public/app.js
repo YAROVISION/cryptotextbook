@@ -414,16 +414,16 @@ async function loadChapter(filename, anchor = null) {
 
     // Load content to editor
     if (state.editor) {
-      state.editor.setValue(data.content);
+      state.editor.setValue(content);
     } else {
       // Monaco is still loading, wait a bit
       setTimeout(() => {
-        if (state.editor) state.editor.setValue(data.content);
+        if (state.editor) state.editor.setValue(content);
       }, 500);
     }
 
     // Render HTML in reader
-    updateReaderContent(data.content);
+    updateReaderContent(content);
     
     // Generate Outline (TOC)
     generateOutline();

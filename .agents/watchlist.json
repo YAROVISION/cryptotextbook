@@ -1,0 +1,60 @@
+{
+  "accounts": [
+    {
+      "name": "Michael Saylor",
+      "x_handle": "saylor",
+      "github_user": "microstrategy"
+    },
+    {
+      "name": "Vitalik Buterin",
+      "x_handle": "VitalikButerin",
+      "github_user": "vbuterin"
+    },
+    {
+      "name": "Illia BTC",
+      "x_handle": "ILLIA_BTC"
+    },
+    {
+      "name": "Secta News",
+      "x_handle": "sectanews"
+    },
+    {
+      "name": "CarlMoon",
+      "x_handle": "carlmoon"
+    },
+    {
+      "name": "CryptoCapo",
+      "x_handle": "CryptoCapo_"
+    },
+    {
+      "name": "Gordon",
+      "x_handle": "GordonGekko"
+    },
+    {
+      "name": "Michaël van de Poppe",
+      "x_handle": "CryptoMichNL"
+    },
+    {
+      "name": "AltcoinDaily",
+      "x_handle": "AltcoinDaily"
+    },
+    {
+      "name": "CryptoGems",
+      "x_handle": "cryptogems555"
+    },
+    {
+      "name": "AshCrypto",
+      "x_handle": "AshCrypto"
+    },
+    {
+      "name": "Benjamin Cowen",
+      "x_handle": "benjamincowen"
+    }
+  ],
+  "subreddits": [
+    "CryptoCurrency",
+    "MSTR",
+    "ethtrader"
+  ],
+  "lookback_days": 1
+}
