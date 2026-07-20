@@ -142,7 +142,7 @@
 - **Створення конфігурації Watchlist** -> Створено файл `[[.agents/watchlist.json]]` для збереження списку пріоритетних джерел та акаунтів (Michael Saylor, Vitalik Buterin, Illia BTC, Secta News та ключових сабредітів).
 - **Створення автоматизованого скрипту** -> Створено скрипт `[[scripts/check_watchlist.py]]` для швидкого збору та агрегації добових оновлень по всьому списку джерел за один крок.
 - **Оновлення документації** -> Оновлено файл `[[README.md]]` з інструкціями з налаштування та запуску моніторингу вотчліста.
-- **Розширення Watchlist** -> Додано 8 нових X-акаунтів крипто-блогерів (CarlMoon, CryptoCapo, Gordon, Michaël van de Poppe, AltcoinDaily, CryptoGems, AshCrypto, Benjamin Cowen) до `[[.agents/watchlist.json]]`.
+- **Розширення Watchlist** -> Додано 9 нових X-акаунтів крипто-блогерів (CarlMoon, CryptoCapo, Gordon, Michaël van de Poppe, AltcoinDaily, CryptoGems, AshCrypto, Benjamin Cowen, Scott Melker) до `[[.agents/watchlist.json]]`.
 
 ## [2026-07-20] ingest | Інтеграція новин з розширеного Watchlist -> Додано в Розділ 7
 
