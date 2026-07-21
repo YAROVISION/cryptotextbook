@@ -82,7 +82,21 @@ def main():
         sys.exit(1)
         
     print(f"\nSuccessfully gathered {len(reports)} reports.")
-    print("Use this output to update Section 7 or draft daily news cards.")
+    
+    # Save reports to a JSON file for analysis
+    output_path = PROJECT_DIR / "tmp" / "watchlist_reports.json"
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(output_path, "w", encoding="utf-8") as f:
+        json.dump(reports, f, ensure_ascii=False, indent=2)
+    print(f"Saved reports to {output_path}")
+
+    # Also write a combined markdown file for easy viewing
+    md_path = PROJECT_DIR / "tmp" / "watchlist_reports.md"
+    with open(md_path, "w", encoding="utf-8") as f:
+        f.write("# Watchlist Daily Reports\n\n")
+        for name, report in reports:
+            f.write(f"## {name}\n\n{report}\n\n---\n\n")
+    print(f"Saved combined markdown to {md_path}")
 
 if __name__ == "__main__":
     main()
