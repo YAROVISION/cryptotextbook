@@ -81,11 +81,34 @@ try {
     'utf-8'
   );
   console.log('✓ Generated chapters.json.');
+
+  // 5. Generate chapters-data.js (standalone offline fallback for file:// protocol & static servers)
+  const bookData = {};
+  for (const file of files) {
+    const content = fs.readFileSync(path.join(bookDir, file), 'utf-8');
+    bookData[file] = content;
+  }
+
+  const jsContent = `// Auto-generated standalone dataset for static textbook reader\nwindow.IS_STATIC_BUILD = true;\nwindow.PRELOADED_CHAPTERS = ${JSON.stringify(chapters, null, 2)};\nwindow.PRELOADED_BOOK = ${JSON.stringify(bookData, null, 2)};\n`;
+  fs.writeFileSync(path.join(distDir, 'chapters-data.js'), jsContent, 'utf-8');
+  console.log('✓ Generated standalone chapters-data.js.');
+
+  // 6. Inject chapters-data.js script tag into dist/index.html
+  const distIndexPath = path.join(distDir, 'index.html');
+  if (fs.existsSync(distIndexPath)) {
+    let indexHtml = fs.readFileSync(distIndexPath, 'utf-8');
+    if (!indexHtml.includes('chapters-data.js')) {
+      indexHtml = indexHtml.replace('<script src="app.js"></script>', '<script src="chapters-data.js"></script>\n  <script src="app.js"></script>');
+      fs.writeFileSync(distIndexPath, indexHtml, 'utf-8');
+      console.log('✓ Injected chapters-data.js into dist/index.html.');
+    }
+  }
+
   console.log('==================================================');
   console.log('🎉 Static build complete! Output is in the "dist" folder.');
-  console.log('You can deploy the "dist" folder directly to GitHub Pages.');
+  console.log('You can deploy the "dist" folder directly to Hostinger or open dist/index.html locally.');
   console.log('==================================================');
 } catch (error) {
-  console.error('Error generating chapters.json:', error);
+  console.error('Error generating static build data:', error);
   process.exit(1);
 }
