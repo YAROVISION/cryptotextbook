@@ -213,18 +213,21 @@ function setupEventListeners() {
     elements.searchResultsPanel.classList.add('hidden');
   });
 
-  // Catch clicking on dynamically rendered Wiki Links in reading mode
+  // Catch clicking on links in reading mode (Wiki Links and Table of Contents / Anchor links)
   elements.readerContent.addEventListener('click', (e) => {
-    if (e.target.classList.contains('wiki-link')) {
+    const link = e.target.closest('a');
+    if (!link) return;
+
+    // Handle Wiki Links
+    if (link.classList.contains('wiki-link')) {
       e.preventDefault();
-      const filename = e.target.getAttribute('data-filename');
-      const anchor = e.target.getAttribute('data-anchor');
+      const filename = link.getAttribute('data-filename');
+      const anchor = link.getAttribute('data-anchor');
       
       const found = state.chapters.find(c => c.filename === filename);
       if (found) {
         loadChapter(filename, anchor);
       } else {
-        // Try looking up clean filenames
         const cleanName = filename.toLowerCase();
         const foundAlternative = state.chapters.find(c => c.filename.toLowerCase().includes(cleanName) || cleanName.includes(c.filename.toLowerCase()));
         if (foundAlternative) {
@@ -233,6 +236,14 @@ function setupEventListeners() {
           showToast(`Файл ${filename} не знайдено в підручнику`, 'error');
         }
       }
+      return;
+    }
+
+    // Handle internal anchor links (<a href="#...">)
+    const href = link.getAttribute('href');
+    if (href && href.startsWith('#')) {
+      e.preventDefault();
+      scrollToAnchor(href);
     }
   });
 
@@ -555,6 +566,16 @@ function postprocessHTML(html) {
   return container.innerHTML;
 }
 
+function slugifyText(text) {
+  if (!text) return '';
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-а-яіїєґ0-9]/gi, '')
+    .replace(/[\s_]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
 // Generate Outline dynamically from headings
 function generateOutline() {
   elements.outlineList.innerHTML = '';
@@ -567,15 +588,17 @@ function generateOutline() {
   }
   
   headings.forEach((heading, idx) => {
-    // Ensure every heading has a unique ID for scrolling
-    const id = `heading-${idx}`;
-    heading.id = id;
+    const cleanText = heading.textContent.replace(/\[!.*?\]/g, '').trim();
+    const slug = slugifyText(cleanText) || `heading-${idx}`;
+    
+    if (!heading.id) {
+      heading.id = slug;
+    }
     
     const li = document.createElement('li');
-    const cleanText = heading.textContent.replace(/\[!.*?\]/g, ''); // strip alert titles if they leak
     
     li.innerHTML = `
-      <a class="outline-${heading.tagName.toLowerCase()}" data-target="${id}">
+      <a class="outline-${heading.tagName.toLowerCase()}" data-target="${heading.id}">
         ${cleanText}
       </a>
     `;
@@ -587,7 +610,6 @@ function generateOutline() {
         behavior: 'smooth'
       });
       
-      // Update active state in outline
       document.querySelectorAll('#outline-list a').forEach(a => a.classList.remove('active-outline'));
       e.target.classList.add('active-outline');
     });
@@ -597,21 +619,34 @@ function generateOutline() {
 }
 
 function scrollToAnchor(anchor) {
-  // Convert markdown-anchor link name to clean string (e.g. #6-концепція -> text-match)
-  const decodedAnchor = decodeURIComponent(anchor.replace('#', '')).toLowerCase();
-  
-  // Find heading with match
-  const headings = elements.readerContent.querySelectorAll('h1, h2, h3, h4');
+  if (!anchor) return;
+  const rawAnchor = anchor.replace(/^#/, '').trim();
+  if (!rawAnchor) return;
+
+  const decodedAnchor = decodeURIComponent(rawAnchor).toLowerCase();
+
   let matchHeading = null;
-  
-  for (const h of headings) {
-    const textClean = h.textContent.toLowerCase().replace(/[^a-z0-9а-яіїєґ]/gi, '-');
-    if (textClean.includes(decodedAnchor) || decodedAnchor.includes(textClean)) {
-      matchHeading = h;
-      break;
+  try {
+    matchHeading = elements.readerContent.querySelector(`[id="${CSS.escape(rawAnchor)}"]`) ||
+                   elements.readerContent.querySelector(`[id="${CSS.escape(decodedAnchor)}"]`);
+  } catch (err) {
+    matchHeading = null;
+  }
+
+  if (!matchHeading) {
+    const headings = elements.readerContent.querySelectorAll('h1, h2, h3, h4');
+    for (const h of headings) {
+      const hSlug = slugifyText(h.textContent);
+      const textClean = h.textContent.toLowerCase();
+      const hId = (h.id || '').toLowerCase();
+      
+      if (hId === decodedAnchor || hSlug === decodedAnchor || hSlug.includes(decodedAnchor) || decodedAnchor.includes(hSlug) || textClean.includes(decodedAnchor)) {
+        matchHeading = h;
+        break;
+      }
     }
   }
-  
+
   if (matchHeading) {
     elements.readerPanel.scrollTo({
       top: matchHeading.offsetTop - 20,
