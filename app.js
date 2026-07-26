@@ -12,11 +12,13 @@ const state = {
   searchIndex: [], // Local cache of { filename, title, content } for offline searching
   lastSavedContent: '',
   autosaveTimer: null,
-  // Detect if we are hosted on a static server (like GitHub Pages) or local filesystem
-  isStaticMode: !['localhost', '127.0.0.1'].includes(window.location.hostname) && 
-                !window.location.hostname.startsWith('192.168.') && 
-                !window.location.hostname.startsWith('10.') && 
-                !window.location.hostname.startsWith('172.')
+  // Detect if we are hosted on a static server (like Hostinger/GitHub Pages) or local file:// protocol
+  isStaticMode: Boolean(window.IS_STATIC_BUILD) || 
+                window.location.protocol === 'file:' ||
+                (!['localhost', '127.0.0.1'].includes(window.location.hostname) && 
+                 !window.location.hostname.startsWith('192.168.') && 
+                 !window.location.hostname.startsWith('10.') && 
+                 !window.location.hostname.startsWith('172.'))
 };
 
 // DOM Elements
@@ -301,11 +303,15 @@ function setWorkspaceMode(mode) {
 // ==========================================================================
 async function loadChapterList() {
   try {
-    const url = state.isStaticMode ? 'chapters.json' : '/api/chapters';
-    const res = await fetch(url);
-    if (!res.ok) throw new Error('Не вдалося завантажити список розділів');
+    if (window.PRELOADED_CHAPTERS) {
+      state.chapters = window.PRELOADED_CHAPTERS;
+    } else {
+      const url = state.isStaticMode ? 'chapters.json' : '/api/chapters';
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('Не вдалося завантажити список розділів');
+      state.chapters = await res.json();
+    }
     
-    state.chapters = await res.json();
     renderChapterList();
     
     // Load first chapter by default
@@ -318,7 +324,14 @@ async function loadChapterList() {
     // Load search indexes in the background
     preloadSearchIndex();
   } catch (error) {
-    showToast(error.message, 'error');
+    if (window.PRELOADED_CHAPTERS) {
+      state.chapters = window.PRELOADED_CHAPTERS;
+      renderChapterList();
+      if (state.chapters.length > 0) loadChapter(state.chapters[0].filename);
+      preloadSearchIndex();
+    } else {
+      showToast(error.message, 'error');
+    }
   }
 }
 
@@ -367,16 +380,20 @@ function renderChapterList() {
 
 async function loadChapter(filename, anchor = null) {
   try {
-    const url = state.isStaticMode ? `book/${filename}` : `/api/chapters/${filename}`;
-    const res = await fetch(url);
-    if (!res.ok) throw new Error('Не вдалося завантажити вміст файлу');
-    
     let content;
-    if (state.isStaticMode) {
-      content = await res.text();
+    if (window.PRELOADED_BOOK && window.PRELOADED_BOOK[filename] !== undefined) {
+      content = window.PRELOADED_BOOK[filename];
     } else {
-      const data = await res.json();
-      content = data.content;
+      const url = state.isStaticMode ? `book/${filename}` : `/api/chapters/${filename}`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('Не вдалося завантажити вміст файлу');
+      
+      if (state.isStaticMode) {
+        content = await res.text();
+      } else {
+        const data = await res.json();
+        content = data.content;
+      }
     }
     
     // Check if there are unsaved changes on the current active chapter
@@ -682,6 +699,20 @@ async function saveActiveChapter(content) {
 async function preloadSearchIndex() {
   state.searchIndex = [];
   
+  if (window.PRELOADED_BOOK) {
+    state.chapters.forEach(ch => {
+      if (window.PRELOADED_BOOK[ch.filename] !== undefined) {
+        state.searchIndex.push({
+          filename: ch.filename,
+          title: ch.title,
+          content: window.PRELOADED_BOOK[ch.filename]
+        });
+      }
+    });
+    console.log(`Global search indexing complete: cached ${state.searchIndex.length} chapters from preloaded dataset.`);
+    return;
+  }
+
   // Background parallel downloads for instant searching
   const promises = state.chapters.map(async (ch) => {
     try {
