@@ -501,6 +501,9 @@ function updateReaderContent(markdownText) {
 }
 
 function preprocessMarkdown(md) {
+  // Unwrap `[[wiki-links]]` if wrapped in inline code backticks
+  md = md.replace(/`\[\[([^`\n]+?)\]\]`/g, '[[$1]]');
+
   // Convert [[wiki-links]] to normal HTML links
   md = md.replace(/\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g, (match, p1, p2) => {
     const target = p1.trim();
@@ -566,12 +569,23 @@ function postprocessHTML(html) {
   return container.innerHTML;
 }
 
+// Configure Marked Custom Heading Renderer for automatic ID generation
+if (typeof marked !== 'undefined' && typeof marked.use === 'function') {
+  const customRenderer = new marked.Renderer();
+  customRenderer.heading = function({ text, depth, raw }) {
+    const cleanText = (raw || text).replace(/<[^>]*>/g, '').replace(/\[!.*?\]/g, '').trim();
+    const slug = slugifyText(cleanText);
+    return `<h${depth} id="${slug}">${text}</h${depth}>`;
+  };
+  marked.use({ renderer: customRenderer });
+}
+
 function slugifyText(text) {
   if (!text) return '';
   return text
     .toLowerCase()
     .trim()
-    .replace(/[^\w\s-а-яіїєґ0-9]/gi, '')
+    .replace(/[^\w\sа-яіїєґ0-9-]/gi, '')
     .replace(/[\s_]+/g, '-')
     .replace(/^-+|-+$/g, '');
 }
@@ -605,10 +619,7 @@ function generateOutline() {
     
     li.querySelector('a').addEventListener('click', (e) => {
       e.preventDefault();
-      elements.readerPanel.scrollTo({
-        top: heading.offsetTop - 20,
-        behavior: 'smooth'
-      });
+      scrollToAnchor(heading.id);
       
       document.querySelectorAll('#outline-list a').forEach(a => a.classList.remove('active-outline'));
       e.target.classList.add('active-outline');
@@ -624,11 +635,13 @@ function scrollToAnchor(anchor) {
   if (!rawAnchor) return;
 
   const decodedAnchor = decodeURIComponent(rawAnchor).toLowerCase();
+  const normalizedAnchor = decodedAnchor.replace(/-+/g, '-');
 
   let matchHeading = null;
   try {
     matchHeading = elements.readerContent.querySelector(`[id="${CSS.escape(rawAnchor)}"]`) ||
-                   elements.readerContent.querySelector(`[id="${CSS.escape(decodedAnchor)}"]`);
+                   elements.readerContent.querySelector(`[id="${CSS.escape(decodedAnchor)}"]`) ||
+                   elements.readerContent.querySelector(`[id="${CSS.escape(normalizedAnchor)}"]`);
   } catch (err) {
     matchHeading = null;
   }
@@ -640,7 +653,11 @@ function scrollToAnchor(anchor) {
       const textClean = h.textContent.toLowerCase();
       const hId = (h.id || '').toLowerCase();
       
-      if (hId === decodedAnchor || hSlug === decodedAnchor || hSlug.includes(decodedAnchor) || decodedAnchor.includes(hSlug) || textClean.includes(decodedAnchor)) {
+      if (hId === decodedAnchor || hId === normalizedAnchor ||
+          hSlug === decodedAnchor || hSlug === normalizedAnchor ||
+          hSlug.includes(decodedAnchor) || decodedAnchor.includes(hSlug) ||
+          hSlug.includes(normalizedAnchor) || normalizedAnchor.includes(hSlug) ||
+          textClean.includes(decodedAnchor) || textClean.includes(normalizedAnchor)) {
         matchHeading = h;
         break;
       }
@@ -648,8 +665,12 @@ function scrollToAnchor(anchor) {
   }
 
   if (matchHeading) {
+    const panelRect = elements.readerPanel.getBoundingClientRect();
+    const headingRect = matchHeading.getBoundingClientRect();
+    const targetScrollTop = elements.readerPanel.scrollTop + (headingRect.top - panelRect.top) - 20;
+
     elements.readerPanel.scrollTo({
-      top: matchHeading.offsetTop - 20,
+      top: targetScrollTop,
       behavior: 'smooth'
     });
   }

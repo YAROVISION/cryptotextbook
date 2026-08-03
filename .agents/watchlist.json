@@ -57,6 +57,11 @@
     {
       "name": "WhaleScan",
       "x_handle": "WhaleScan"
+    },
+    {
+      "name": "InvestModaCrypto",
+      "telegram_channel": "investmodacrypto",
+      "x_handle": "investmodacrypto"
     }
   ],
   "subreddits": [
