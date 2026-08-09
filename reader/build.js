@@ -45,10 +45,11 @@ console.log('✓ Copied textbook chapters.');
 
 // 4. Generate chapters.json
 try {
-  const files = fs.readdirSync(bookDir).filter(file => file.endsWith('.md'));
+  const internalFiles = ['schema.md', 'log.md'];
+  const files = fs.readdirSync(bookDir).filter(file => file.endsWith('.md') && !internalFiles.includes(file));
   
   // Sort logic (same as server.js)
-  const priorityOrder = ['index.md', 'schema.md', 'log.md'];
+  const priorityOrder = ['index.md'];
   files.sort((a, b) => {
     const idxA = priorityOrder.indexOf(a);
     const idxB = priorityOrder.indexOf(b);
@@ -66,7 +67,7 @@ try {
 
   const chapters = files.map(file => {
     const stats = fs.statSync(path.join(bookDir, file));
-    let title = file.replace('.md', '');
+    let title = file === 'index.md' ? 'Зміст' : file.replace('.md', '');
     return {
       filename: file,
       title: title,

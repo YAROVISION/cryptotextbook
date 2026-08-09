@@ -49,10 +49,11 @@ const getSafePath = (filename) => {
 // API: Get all chapters
 app.get('/api/chapters', (req, res) => {
   try {
-    const files = fs.readdirSync(bookDir).filter(file => file.endsWith('.md'));
+    const internalFiles = ['schema.md', 'log.md'];
+    const files = fs.readdirSync(bookDir).filter(file => file.endsWith('.md') && !internalFiles.includes(file));
     
-    // Sort logic: index.md -> schema.md -> log.md -> Chapters numerically
-    const priorityOrder = ['index.md', 'schema.md', 'log.md'];
+    // Sort logic: index.md -> Chapters numerically
+    const priorityOrder = ['index.md'];
     files.sort((a, b) => {
       const idxA = priorityOrder.indexOf(a);
       const idxB = priorityOrder.indexOf(b);
@@ -73,7 +74,7 @@ app.get('/api/chapters', (req, res) => {
       const stats = fs.statSync(path.join(bookDir, file));
       
       // Generate clean title
-      let title = file.replace('.md', '');
+      let title = file === 'index.md' ? 'Зміст' : file.replace('.md', '');
       return {
         filename: file,
         title: title,

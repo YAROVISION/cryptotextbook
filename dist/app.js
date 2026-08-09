@@ -366,10 +366,6 @@ function renderChapterList() {
       displayName = ch.title.replace(/^Розділ\s*\d+\.\s*/i, '');
     } else if (ch.filename === 'index.md') {
       categoryBadge = `<i data-lucide="home" style="width: 14px; height: 14px; margin-right: 4px;"></i>`;
-    } else if (ch.filename === 'schema.md') {
-      categoryBadge = `<i data-lucide="settings" style="width: 14px; height: 14px; margin-right: 4px;"></i>`;
-    } else if (ch.filename === 'log.md') {
-      categoryBadge = `<i data-lucide="history" style="width: 14px; height: 14px; margin-right: 4px;"></i>`;
     }
 
     li.innerHTML = `
@@ -435,8 +431,8 @@ async function loadChapter(filename, anchor = null) {
     let category = 'Довідник';
     if (filename.startsWith('Розділ')) {
       category = 'Підручник';
-    } else if (['index.md', 'schema.md', 'log.md'].includes(filename)) {
-      category = 'Системні';
+    } else if (filename === 'index.md') {
+      category = 'Головна';
     }
     elements.currentCategory.textContent = category;
 
