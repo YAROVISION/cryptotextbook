@@ -1,0 +1,54 @@
+{
+  "system_meta": {
+    "name": "CryptoScalping Textbook Knowledge Rules",
+    "version": "1.0.0",
+    "source": "book/",
+    "updated_at": "2026-09-04"
+  },
+  "risk_management": {
+    "min_risk_reward_ratio": 2.5,
+    "optimal_risk_reward_ratio": 3.0,
+    "max_risk_per_trade_percent": 1.0,
+    "max_daily_drawdown_percent": 3.0,
+    "max_consecutive_losses_limit": 3,
+    "mandatory_stop_loss": true,
+    "breakeven_trigger_r_multiple": 1.0,
+    "take_profit_scaling": [
+      { "portion": 0.5, "target_r": 2.5 },
+      { "portion": 0.5, "target_r": 4.0 }
+    ]
+  },
+  "cluster_analysis_parameters": {
+    "anchor_bar": {
+      "delta_multiplier_vs_average": 1.5,
+      "body_percentage_min": 70,
+      "poc_position_requirement": "opposite_to_direction"
+    },
+    "trap_block": {
+      "min_candle_compression_ratio": 0.5,
+      "cluster_volume_percentile": 85,
+      "absorption_delta_divergence": true,
+      "retest_confirmation_bars": 2
+    },
+    "liquidity_block": {
+      "two_impulse_rule": true,
+      "mirror_retest_level": "breakout_boundary"
+    },
+    "breakout_joc": {
+      "volume_surge_multiplier": 1.8,
+      "delta_direction_aligned": true,
+      "dom_density_absorption_required": true
+    }
+  },
+  "binary_checklist": [
+    { "id": 1, "rule": "Наявність чіткого старшого тренду (HTF Directional Bias aligned)", "weight": 1 },
+    { "id": 2, "rule": "Наявність чіткої біржової щільності / опори в стакані (DOM Support/Resistance)", "weight": 1 },
+    { "id": 3, "rule": "Кластерне підтвердження дельти (Delta confirms direction, no adverse divergence)", "weight": 1 },
+    { "id": 4, "rule": "Фіксований Stop-Loss за кластерним рівнем / межею блоку", "weight": 1 },
+    { "id": 5, "rule": "Розрахунковий Risk/Reward >= 1:2.5", "weight": 1 },
+    { "id": 6, "rule": "Поводир ринку (BTC/ETH) не рухається проти позиції", "weight": 1 },
+    { "id": 7, "rule": "Спред та ліквідність інструмента відповідають допустимому проковзуванню (Slippage <= 2 ticks)", "weight": 1 },
+    { "id": 8, "rule": "Денний ліміт збитків не вичерпано (Daily DD < 3%)", "weight": 1 }
+  ],
+  "checklist_pass_threshold": 7
+}

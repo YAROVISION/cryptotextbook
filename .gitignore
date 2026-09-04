@@ -5,3 +5,6 @@ tmp/
 test.txt
 last-run.json
 base/
+bot/
+.env
+*.env
