@@ -81,7 +81,12 @@ body {
   color: var(--text-primary);
   background-color: var(--bg-primary);
   height: 100vh;
-  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  position: relative;
+  -webkit-text-size-adjust: 100%;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
@@ -106,9 +111,12 @@ body {
    ========================================================================== */
 .app-layout {
   display: flex;
-  width: 100vw;
+  width: 100%;
+  max-width: 100%;
   height: 100vh;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  position: relative;
 }
 
 /* ==========================================================================
@@ -362,7 +370,11 @@ body {
   display: flex;
   flex-direction: column;
   height: 100%;
-  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  min-width: 0;
   background-color: var(--bg-primary);
 }
 
@@ -568,19 +580,30 @@ body {
 .workspace-panels {
   flex-grow: 1;
   display: flex;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: hidden;
   position: relative;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .workspace-panel {
   display: none;
   height: 100%;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
   overflow-y: auto;
+  min-width: 0;
+  overscroll-behavior-x: none;
+  -webkit-overflow-scrolling: touch;
 }
 
 .workspace-panel.active-panel {
   display: block;
   width: 100%;
+  max-width: 100%;
 }
 
 /* Split screen config */
@@ -641,6 +664,11 @@ body {
 #reader-panel {
   background-color: var(--bg-primary);
   width: 100%;
+  max-width: 100%;
+  overflow-x: hidden !important;
+  overflow-y: auto;
+  overscroll-behavior-x: none;
+  -webkit-overflow-scrolling: touch;
 }
 
 .markdown-body {
@@ -653,6 +681,10 @@ body {
   font-size: 17px;
   line-height: 1.55;
   color: var(--text-primary);
+  overflow-x: hidden;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
 }
 
 /* Markdown styling inside panels */
@@ -698,9 +730,26 @@ body {
   margin-bottom: 0.4em;
 }
 
-/* Tables */
+/* Tables & Table Wrapper */
+.table-wrapper {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  margin-bottom: 1.5em;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+}
+
+.table-wrapper table {
+  margin-bottom: 0;
+  border: none;
+}
+
 .markdown-body table {
   width: 100%;
+  min-width: 100%;
   border-collapse: collapse;
   margin-bottom: 1.5em;
   font-size: 0.95rem;
@@ -730,17 +779,25 @@ body {
   padding: 3px 6px;
   border-radius: 6px;
   border: 1px solid var(--border-color);
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .markdown-body pre {
   margin-bottom: 1.5em;
   padding: 16px;
-  overflow: auto;
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
   font-size: 0.9em;
   line-height: 1.45;
   background-color: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: 12px;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
 }
 
 .markdown-body pre code {
@@ -748,6 +805,26 @@ body {
   padding: 0;
   border: none;
   font-size: inherit;
+  white-space: pre;
+  word-break: normal;
+  overflow-wrap: normal;
+}
+
+/* KaTeX Math Blocks */
+.katex-display {
+  display: block;
+  max-width: 100%;
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  padding: 8px 0;
+  margin: 1em 0;
+}
+
+.katex {
+  max-width: 100%;
 }
 
 /* GitHub style blockquotes & alerts */
@@ -1114,11 +1191,22 @@ body {
    Mobile Responsive Adjustments
    ========================================================================== */
 @media (max-width: 768px) {
+  html, body {
+    overflow-x: hidden !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    position: relative;
+    touch-action: pan-y;
+  }
+
   /* Layout adjustments */
   .app-layout {
     flex-direction: column;
     position: relative;
     height: 100vh;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
   }
   
   /* Sidebar as overlay drawer */
@@ -1152,15 +1240,45 @@ body {
   
   /* Main content takes full screen width */
   .main-content {
-    width: 100%;
+    width: 100% !important;
+    max-width: 100% !important;
     height: 100%;
-    overflow: hidden;
+    overflow-x: hidden !important;
+    overflow-y: hidden;
+    min-width: 0;
   }
   
+  .workspace-panels {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    overflow-y: hidden;
+    min-width: 0;
+  }
+
+  .workspace-panel {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    min-width: 0;
+  }
+
+  #reader-panel {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior-x: none !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
   /* Header adjustments */
   .app-header {
     padding: 0 12px;
     height: 60px;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden;
   }
   
   .title-wrapper {
@@ -1199,24 +1317,66 @@ body {
     padding: 8px 12px;
   }
   
-  /* Markdown content spacing and sizing */
+  /* Markdown content locked strictly to smartphone bounds */
   .markdown-body {
-    padding: 24px 16px;
-    font-size: 1rem;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 20px 14px !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+    font-size: 0.98rem;
     line-height: 1.6;
+    overflow-wrap: break-word !important;
+    word-wrap: break-word !important;
+    word-break: break-word !important;
   }
   
   .markdown-body h1 {
-    font-size: 1.65rem;
+    font-size: 1.55rem;
+    overflow-wrap: break-word;
+    word-break: break-word;
   }
   .markdown-body h2 {
-    font-size: 1.35rem;
+    font-size: 1.3rem;
     padding-bottom: 0.2em;
+    overflow-wrap: break-word;
+    word-break: break-word;
   }
   .markdown-body h3 {
-    font-size: 1.15rem;
+    font-size: 1.12rem;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+  .markdown-body h4 {
+    font-size: 1.02rem;
+    overflow-wrap: break-word;
+    word-break: break-word;
   }
   
+  .table-wrapper {
+    max-width: 100% !important;
+    width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 1.2em;
+  }
+
+  .markdown-body pre {
+    max-width: 100% !important;
+    width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    padding: 12px;
+    font-size: 0.82em;
+  }
+
+  .katex-display {
+    max-width: 100% !important;
+    width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
   /* Disable split screen editor on mobile */
   .split-mode #reader-panel {
     width: 100% !important;
@@ -1229,11 +1389,17 @@ body {
   /* Global search results panel spacing */
   .search-results-list {
     padding: 16px;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
   }
   
   .search-result-item {
     padding: 14px;
     margin-bottom: 16px;
+    overflow-wrap: break-word;
+    word-break: break-word;
   }
 }
 

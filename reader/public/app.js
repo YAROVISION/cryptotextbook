@@ -562,6 +562,15 @@ function postprocessHTML(html) {
     }
   });
   
+  // Wrap tables for responsive contained scrolling without stretching the page
+  const tables = container.querySelectorAll('table');
+  tables.forEach(table => {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'table-wrapper';
+    table.parentNode.insertBefore(wrapper, table);
+    wrapper.appendChild(table);
+  });
+
   return container.innerHTML;
 }
 
