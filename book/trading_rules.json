@@ -6,16 +6,19 @@
     "updated_at": "2026-09-04"
   },
   "risk_management": {
-    "min_risk_reward_ratio": 2.5,
-    "optimal_risk_reward_ratio": 3.0,
+    "default_stop_loss_percent": 1.0,
+    "default_take_profit_percent": 2.0,
+    "min_stake_usdt": 5.0,
+    "min_risk_reward_ratio": 2.0,
+    "optimal_risk_reward_ratio": 2.5,
     "max_risk_per_trade_percent": 1.0,
     "max_daily_drawdown_percent": 3.0,
     "max_consecutive_losses_limit": 3,
     "mandatory_stop_loss": true,
     "breakeven_trigger_r_multiple": 1.0,
     "take_profit_scaling": [
-      { "portion": 0.5, "target_r": 2.5 },
-      { "portion": 0.5, "target_r": 4.0 }
+      { "portion": 0.5, "target_r": 2.0 },
+      { "portion": 0.5, "target_r": 3.0 }
     ]
   },
   "cluster_analysis_parameters": {
