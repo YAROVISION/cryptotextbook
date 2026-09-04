@@ -1,1 +1,12 @@
-{}
+{
+  "useMarkdownLinks": false,
+  "newFileFolderPath": "book",
+  "userIgnoreFilters": [
+    "reader/**",
+    "base/**",
+    "node_modules/**"
+  ],
+  "showLineNumber": true,
+  "readableLineLength": true,
+  "strictLineBreaks": false
+}
